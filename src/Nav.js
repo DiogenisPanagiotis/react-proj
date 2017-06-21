@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Link, Switch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import $ from 'jquery';
 
 class Nav extends Component {
+  constructor(){
+    super();
+    this.state = {
+      activeTab: 'Home'
+    }
+  }
+componentDidMount(){
+  $('.nav.navbar-nav > li').on('click', function(e) {
+    $('.nav.navbar-nav > li').removeClass('active');
+    $(this).addClass('active');
+  }); 
+}
   render() {
     return (
         <nav className="navbar navbar-default navbar-fixed-top">
@@ -14,23 +27,23 @@ class Nav extends Component {
                 <span className="icon-bar"></span>
                 <span className="icon-bar"></span>
               </button>
-              <a className="navbar-brand" href="#">Project name</a>
+              <a className="navbar-brand" href="">Project</a>
             </div>       
             <div id="navbar" className="navbar-collapse collapse">
               <ul className="nav navbar-nav">
-                <li className="active"><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li className="active"><Link to="/">Home</Link></li>
+                <li ><Link to="/weather">Weather</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
                 <li className="dropdown">
-                  <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
+                  <a href="" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
                   <ul className="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
+                    <li><a href="">Action</a></li>
+                    <li><a href="">Another action</a></li>
+                    <li><a href="">Something else here</a></li>
                     <li role="separator" className="divider"></li>
                     <li className="dropdown-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
+                    <li><a href="">Separated link</a></li>
+                    <li><a href="">One more separated link</a></li>
                   </ul>
                 </li>
               </ul>
@@ -41,6 +54,7 @@ class Nav extends Component {
               </ul>
             </div>
           </div>
+          <nav className="navbar navbar-default navbar-fixed-bottom"></nav>
         </nav>
     );
   }
