@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
 
 class Nav extends Component {
   constructor(){
@@ -10,12 +9,7 @@ class Nav extends Component {
       activeTab: 'Home'
     }
   }
-componentDidMount(){
-  $('.nav.navbar-nav > li').on('click', function(e) {
-    $('.nav.navbar-nav > li').removeClass('active');
-    $(this).addClass('active');
-  }); 
-}
+
   render() {
     return (
         <nav className="navbar navbar-default navbar-fixed-top">
