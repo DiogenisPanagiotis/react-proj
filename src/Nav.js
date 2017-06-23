@@ -42,9 +42,7 @@ class Nav extends Component {
                 </li>
               </ul>
               <ul className="nav navbar-nav navbar-right">
-                <li><a href="../navbar/">Default</a></li>
-                <li><a href="../navbar-static-top/">Static top</a></li>
-                <li className="active"><a href="./">Fixed top <span className="sr-only">(current)</span></a></li>
+                <li className="active"><a href="./">DP <span className="sr-only">(current)</span></a></li>
               </ul>
             </div>
           </div>
