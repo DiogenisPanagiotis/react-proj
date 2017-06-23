@@ -73,7 +73,7 @@ class Weather extends Component {
   }
 
   weather(){
-    const { lat, lng, clouds, humidity, temperature, wind, tempMax, tempMin } = this.state;
+    const { lat, lng } = this.state;
     const url = `https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather`;
     let that = this;
     let barChart;

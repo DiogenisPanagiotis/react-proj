@@ -13,7 +13,7 @@ class App extends Component {
             <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. </p>
             <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non dolore magnam aliquam quaerat voluptatem.</p>
             <p>
-              <a className="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs &raquo;</a>
+              <a className="btn btn-lg btn-primary" href="../../components/#navbar" role="button">Welcome</a>
             </p>
           </div>
         {/* jumbotron */}
