@@ -3,11 +3,11 @@ import PlaceHolder from './PlaceHolder'
 import axios from 'axios';
 import Chart from 'chart.js';
 import './App.css';
+import GoogleMapReact from 'google-map-react';
 
 const APIKEY = `518b0cf8d7437984d1d1a7c3d70ef6a1`;
 const GOOGLEAPIKEY = `AIzaSyCQTKjg8m35TRoZyL8EEspFIE_LjDFTmRs`;
 const places = require('places.js');
-
 
 class Weather extends Component {
   constructor(props){
@@ -21,9 +21,15 @@ class Weather extends Component {
       wind: [],
       tempMax: [],
       tempMin: [],
-      chart: null
+      chart: null,
+      address: 'none'
     }
   }
+
+  static defaultProps = {
+    center: {lat: 59.95, lng: 30.33},
+    zoom: 11
+  };
 
   getCurrentLocation(){
     let address = document.querySelector('#address-value');
@@ -40,6 +46,7 @@ class Weather extends Component {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLEAPIKEY}`)
       .then(res => {
         address.textContent = res.data.results[1].formatted_address;
+        that.setState({ address: 'inherit'});
       });
 
       that.weather();
@@ -79,6 +86,7 @@ class Weather extends Component {
     let barChart;
     let donutChart;
     let scatterChart;
+    let polarChart;
 
     axios.get(`${url}?lat=${lat}&lon=${lng}&APPID=${APIKEY}&units=imperial`)
          .then((res) => {
@@ -86,12 +94,12 @@ class Weather extends Component {
           const { clouds, main, wind } = res.data;
 
           that.setState({
-            clouds: [clouds.all],
-            humidity: [main.humidity],
-            temperature: [main.temp],
-            wind: [wind.speed],
-            tempMax: [main.temp_max],
-            tempMin: [main.temp_min]
+            clouds: [ parseInt(String(clouds.all).split('.')[0]) ],
+            humidity: [ parseInt(String(main.humidity ).split('.')[0])],
+            temperature: [ parseInt(String(main.temp).split('.')[0]) ],
+            wind: [ parseInt(String(wind.speed).split('.')[0]) ],
+            tempMax: [ parseInt(String(main.temp_max).split('.')[0]) ],
+            tempMin: [ parseInt(String(main.temp_min).split('.')[0]) ]
           });
 
           const ctx = document.getElementById('barChart').getContext('2d');
@@ -144,8 +152,8 @@ class Weather extends Component {
                       padding: {
                         left: 0,
                         right: 0,
-                        bottom: 20,
-                        top: 20
+                        bottom: 0,
+                        top: 0
                       }
                     },
                     scales: {
@@ -181,8 +189,25 @@ class Weather extends Component {
                 backgroundColor: ['#EBE0FF', '#D7ECFB', '#DBF2F2', '#FFF5DD', '#FFECD9', '#FFE0E6'],
                 borderColor: ['#9966FF', '#36A2EB', '#4BC0C0', '#FFCD56', '#FF9F40', '#FF6384']
               }],
-            labels: labels
-            }
+            labels: labels,
+            },
+            // options: {
+            //   maintainAspectRatio: false,
+            // }
+          });
+
+          const ctx4 = document.getElementById('polarChart').getContext('2d');
+
+          polarChart = new Chart(ctx4, {
+            type: 'polarArea',
+            data: {
+              datasets: [{
+                data: donutData,
+                backgroundColor: ['#EBE0FF', '#D7ECFB', '#DBF2F2', '#FFF5DD', '#FFECD9', '#FFE0E6'],
+                borderColor: ['#9966FF', '#36A2EB', '#4BC0C0', '#FFCD56', '#FF9F40', '#FF6384']
+              }],
+            labels: labels,
+            },
           });
 
           const ctx3 = document.getElementById('scatterChart').getContext('2d');
@@ -274,40 +299,41 @@ class Weather extends Component {
               }
           });
 
+
          }).catch(e => console.error());
 
     this.setState({ chart: true });
     console.log(this.state, 'state')
   }
 
-  renderBarChart(){
+  renderDonutAndPolar(){
     if (this.state.chart === null){
       return (
-        <PlaceHolder/>
+        <div className="row">
+          <div className="col-xs-12 col-md-10 col-md-offset-1">
+            <PlaceHolder/>
+          </div>
+        </div>
       )
     }
     return (
-      <div className="jumbotron">
-        <div className="jumbotron-white">
-          <canvas id="barChart"></canvas>
-        </div>          
+      <div className="row">
+        <div className="col-xs-12 col-md-5 col-md-offset-1">
+          <div className="jumbotron">
+            <div className="jumbotron-white">
+              <canvas id="donutChart"></canvas>
+            </div>          
+          </div>
+        </div>
+        <div className="col-xs-12 col-md-5">
+          <div className="jumbotron">
+            <div className="jumbotron-white">
+              <canvas id="polarChart"></canvas>
+            </div>          
+          </div>
+        </div>
       </div>
-    )
-  }  
-
-  renderDonutChart(){
-    if (this.state.chart === null){
-      return (
-        <PlaceHolder/>
-      )
-    }
-    return (
-      <div className="jumbotron">
-        <div className="jumbotron-white">
-          <canvas id="donutChart"></canvas>
-        </div>          
-      </div>
-    )
+    )    
   }
 
   renderScatterChart(){
@@ -325,15 +351,163 @@ class Weather extends Component {
     )
   }
 
-  renderInput(){
+  renderBarChart(){
+    if (this.state.chart === null){
+      return (
+        <PlaceHolder/>
+      )
+    }
     return (
-      <div className="jumbotron jumbotron-search">
-        <h2>Weather</h2>
-        <input type="search" id="address-input" placeholder="Where are we going?" />
-        <p></p>
-        <p><strong id="address-value"></strong></p>
+      <div className="jumbotron">
+        <div className="jumbotron-white">
+          <canvas id="barChart"></canvas>
+        </div>          
+      </div>
+    )
+  }
+
+  renderMap(){
+    const GoogleMapConfig = {
+      key: GOOGLEAPIKEY
+    };
+    const mapContainer = {
+      position: 'relative',
+      height: 400
+    }
+    const marker = () => {
+      return (
+        <span 
+          className="glyphicon glyphicon-map-marker" 
+          aria-hidden="true"
+          lat={this.state.lat}
+          lng={this.state.lng}
+          style={{ fontSize: '3em', color: '#FF6384'}}
+        >
+        </span>
+      )
+    }
+    const {lat, lng} = this.state;
+    if (this.state.chart === null){
+      return (
+        <PlaceHolder/>
+      )
+    }
+    return (
+      <div className="jumbotron" style={mapContainer}>
+        <GoogleMapReact
+          center={{lat: lat, lng: lng}}
+          defaultZoom={this.props.zoom}
+          bootstrapURLKeys={GoogleMapConfig}
+        >
+        {marker()}
+        </GoogleMapReact>
       </div>
     );
+  }
+  renderAddress(){
+    const location = {
+      display: this.state.address
+    }
+    return (
+      <nav aria-label="..." style={location}>
+        <ul className="pager">
+          <li className="next"><a id="address-value" href="#"></a></li>
+        </ul>
+      </nav>
+    );
+  }
+  renderInput(){
+    const input = () => {
+      return (
+        <div className="col-xs-12 col-md-6">
+          <div className="jumbotron jumbotron-search">
+            <ul className="nav nav-tabs">
+              <li role="presentation" className="active"><a href="#">Weather</a></li>
+            </ul>
+            <br></br>
+            <input type="search" id="address-input" placeholder="Where are we going?" />
+            <p></p>
+            {this.renderAddress()}
+          </div>
+        </div>         
+      )
+    }
+    if (this.state.chart === null){
+      return (
+        <div className="row">
+        {input()}
+          <div className="col-xs-12 col-md-6">
+            <PlaceHolder/>
+          </div>
+        </div>
+      )
+    } else {
+      const {temperature, wind, humidity, clouds} = this.state;
+      const tempStyle = {
+        width: temperature[0] + '%',
+        backgroundColor: '#4BC0C0',
+        minWidth: '3em'
+      }
+      const windStyle = {
+        width: wind[0] + '%',
+        backgroundColor: '#FF6384',
+        minWidth: '3em'
+      }
+      const humidityStyle = {
+        width: humidity[0] + '%',
+        backgroundColor: '#36A2EB',
+        minWidth: '3em'
+      }
+      const cloudsStyle = {
+        width: clouds[0] + '%',
+        backgroundColor: '#9966FF',
+        minWidth: '3em'
+      }
+
+      const renderProgress = () => {
+        return (
+          <div>
+            <ul className="nav nav-pills">
+              <li role="presentation" className="active"><a className="progress-t" href="#">Temperature</a></li>
+              <li role="presentation" className="active"><a className="progress-w" href="#">Wind</a></li>
+              <li role="presentation" className="active"><a className="progress-h" href="#">Humidity</a></li>
+              <li role="presentation" className="active"><a className="progress-c" href="#">Clouds</a></li>
+            </ul>
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={temperature[0]} aria-valuemin="0" aria-valuemax="100" style={tempStyle}>
+              {temperature[0]}
+              </div>
+            </div>            
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={wind[0]} aria-valuemin="0" aria-valuemax="100" style={windStyle}>
+              {wind[0]}
+              </div>
+            </div>
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={humidity[0]} aria-valuemin="0" aria-valuemax="100" style={humidityStyle}>
+              {humidity[0]}
+              </div>
+            </div>
+            <div className="progress progress-last">
+              <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={clouds[0]} aria-valuemin="0" aria-valuemax="100" style={cloudsStyle}>
+              {clouds[0]}
+              </div>
+            </div>
+          </div>
+        )
+      };
+
+      return (
+        <div className="row">
+          { input() }
+          <div className="col-xs-12 col-md-6">
+            <div className="jumbotron">
+            {renderProgress()}
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 
   render() {
@@ -343,11 +517,12 @@ class Weather extends Component {
           <div className="row">
             <div className="col-xs-12 col-md-8 col-md-offset-2">
               {this.renderInput()}
+              {this.renderMap()}
               {this.renderBarChart()}
-              {this.renderDonutChart()}
-              {this.renderScatterChart()}
+              {/*this.renderScatterChart()*/}
             </div>
           </div>
+              {this.renderDonutAndPolar()}
         </div> 
       </div>
     );

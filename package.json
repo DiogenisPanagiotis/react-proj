@@ -8,9 +8,13 @@
   "dependencies": {
     "axios": "^0.16.2",
     "chart.js": "^2.6.0",
+    "google-map-react": "^0.24.0",
+    "google-maps-react": "^1.0.19",
     "places.js": "^1.4.14",
     "react": "^15.5.4",
+    "react-animated-number": "^0.4.3",
     "react-dom": "^15.5.4",
+    "react-map-gl": "^2.0.3",
     "react-router-dom": "next"
   },
   "scripts": {
