@@ -14,8 +14,10 @@
     "react": "^15.5.4",
     "react-animated-number": "^0.4.3",
     "react-dom": "^15.5.4",
+    "react-inlinesvg": "^0.6.0",
     "react-map-gl": "^2.0.3",
-    "react-router-dom": "next"
+    "react-router-dom": "next",
+    "react-svg": "^2.1.21"
   },
   "scripts": {
     "start": "react-scripts start",

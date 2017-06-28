@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PlaceHolder from './PlaceHolder'
+import Icons from './Icons'
 import axios from 'axios';
 import Chart from 'chart.js';
 import './App.css';
@@ -23,6 +24,7 @@ class Weather extends Component {
       tempMin: [],
       chart: null,
       address: 'none'
+
     }
   }
 
@@ -74,9 +76,6 @@ class Weather extends Component {
       address.textContent = e.suggestion.value 
     });
 
-    placesAutocomplete.on('clear', () => {
-      address.textContent = '';
-    });
   }
 
   weather(){
@@ -376,7 +375,7 @@ class Weather extends Component {
     }
     const marker = () => {
       return (
-        <span 
+        <span
           className="glyphicon glyphicon-map-marker" 
           aria-hidden="true"
           lat={this.state.lat}
@@ -411,31 +410,56 @@ class Weather extends Component {
     return (
       <nav aria-label="..." style={location}>
         <ul className="pager">
-          <li className="next"><a id="address-value" href="#"></a></li>
+          <li className="next"><a id="address-value"></a></li>
         </ul>
       </nav>
     );
   }
+
+  renderIcons(){
+    if (this.state.chart === null){
+      return (
+        <PlaceHolder/>
+      )
+    }
+    return (
+      <Icons/>
+    )    
+  }
   renderInput(){
     const input = () => {
       return (
-        <div className="col-xs-12 col-md-6">
-          <div className="jumbotron jumbotron-search">
-            <ul className="nav nav-tabs">
-              <li role="presentation" className="active"><a href="#">Weather</a></li>
-            </ul>
-            <br></br>
-            <input type="search" id="address-input" placeholder="Where are we going?" />
-            <p></p>
-            {this.renderAddress()}
-          </div>
-        </div>         
+        <div className="jumbotron jumbotron-search">
+          <ul className="nav nav-tabs">
+            <li role="presentation" className="active"><a href="#">Weather</a></li>
+          </ul>
+          <br></br>
+          <input type="search" id="address-input" placeholder="Where are we going?" />
+          <p></p>
+          {this.renderAddress()}
+        </div>   
+      )
+    }
+    const input2 = () => {
+      return (
+        <div className="jumbotron jumbotron-search" style={{ display: 'none'}}>
+          <ul className="nav nav-tabs">
+            <li role="presentation" className="active"><a href="#">Weather</a></li>
+          </ul>
+          <br></br>
+          <input type="search" id="address-input" placeholder="Where are we going?" />
+          <p></p>
+          {this.renderAddress()}
+        </div>   
       )
     }
     if (this.state.chart === null){
       return (
         <div className="row">
-        {input()}
+          <div className="col-xs-12 col-md-6">
+          {input2()}
+          <PlaceHolder/>
+          </div>
           <div className="col-xs-12 col-md-6">
             <PlaceHolder/>
           </div>
@@ -451,7 +475,7 @@ class Weather extends Component {
       const windStyle = {
         width: wind[0] + '%',
         backgroundColor: '#FF6384',
-        minWidth: '3em'
+        minWidth: '5em'
       }
       const humidityStyle = {
         width: humidity[0] + '%',
@@ -461,7 +485,7 @@ class Weather extends Component {
       const cloudsStyle = {
         width: clouds[0] + '%',
         backgroundColor: '#9966FF',
-        minWidth: '3em'
+        minWidth: '6em'
       }
 
       const renderProgress = () => {
@@ -499,7 +523,9 @@ class Weather extends Component {
 
       return (
         <div className="row">
-          { input() }
+          <div className="col-xs-12 col-md-6">
+          {input()}
+          </div>
           <div className="col-xs-12 col-md-6">
             <div className="jumbotron">
             {renderProgress()}
@@ -517,6 +543,7 @@ class Weather extends Component {
           <div className="row">
             <div className="col-xs-12 col-md-8 col-md-offset-2">
               {this.renderInput()}
+              {this.renderIcons()}
               {this.renderMap()}
               {this.renderBarChart()}
               {/*this.renderScatterChart()*/}

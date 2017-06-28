@@ -2,6 +2,12 @@ body {
   min-height: 1000px;
   padding-top: 80px;
 }
+.nav-tabs {
+  padding-top: 8px;
+}
+.next {
+  cursor: default;
+}
 .jumbotron {
 	background-color: #F8F8F8;
 	border: solid 1px #E7E7E7;
@@ -10,7 +16,7 @@ body {
 	background-color: #fff;
 }
 .jumbotron-search {
-  height: 280px;
+  height: 282px;
 }
 
 #barChart {
