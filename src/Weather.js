@@ -6,8 +6,11 @@ import Chart from 'chart.js';
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 
-const APIKEY = `518b0cf8d7437984d1d1a7c3d70ef6a1`;
-const GOOGLEAPIKEY = `AIzaSyCQTKjg8m35TRoZyL8EEspFIE_LjDFTmRs`;
+// const APIKEY = `518b0cf8d7437984d1d1a7c3d70ef6a1`;
+const APIKEY = 'c008ca70462daa36b0137b9093fb6f93';
+// const APIKEY = 'bdeaf5dd3f64536aa6910488547402a8';
+// const GOOGLEAPIKEY = `AIzaSyCQTKjg8m35TRoZyL8EEspFIE_LjDFTmRs`;
+const GOOGLEAPIKEY = `AIzaSyDpQJ0xfIXUkhpu3gN296XV5H-B9z47jYY`;
 const places = require('places.js');
 
 class Weather extends Component {
@@ -47,6 +50,7 @@ class Weather extends Component {
 
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLEAPIKEY}`)
       .then(res => {
+        console.log("res: ", res)
         address.textContent = res.data.results[1].formatted_address;
         that.setState({ address: 'inherit'});
       });
@@ -87,7 +91,7 @@ class Weather extends Component {
     let scatterChart;
     let polarChart;
 
-    axios.get(`${url}?lat=${lat}&lon=${lng}&APPID=${APIKEY}&units=imperial`)
+    axios.get(`${url}?lat=${lat}&lon=${lng}&appid=${APIKEY}&units=imperial`)
          .then((res) => {
           // console.log(JSON.stringify(res.data, null, 2))
           const { clouds, main, wind } = res.data;
@@ -317,14 +321,14 @@ class Weather extends Component {
     }
     return (
       <div className="row">
-        <div className="col-xs-12 col-md-5 col-md-offset-1">
+        <div className="col-xs-12 col-md-10 col-md-offset-1">
           <div className="jumbotron">
             <div className="jumbotron-white">
               <canvas id="donutChart"></canvas>
             </div>          
           </div>
         </div>
-        <div className="col-xs-12 col-md-5">
+        <div className="col-xs-12 col-md-10 col-md-offset-1">
           <div className="jumbotron">
             <div className="jumbotron-white">
               <canvas id="polarChart"></canvas>
@@ -371,7 +375,7 @@ class Weather extends Component {
     };
     const mapContainer = {
       position: 'relative',
-      height: 400
+      height: 600
     }
     const marker = () => {
       return (
@@ -541,7 +545,7 @@ class Weather extends Component {
       <div className="App">
         <div className="container">
           <div className="row">
-            <div className="col-xs-12 col-md-8 col-md-offset-2">
+            <div className="col-xs-12 col-md-10 col-md-offset-1">
               {this.renderInput()}
               {this.renderIcons()}
               {this.renderMap()}
